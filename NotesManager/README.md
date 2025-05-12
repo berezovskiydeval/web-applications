@@ -27,7 +27,7 @@ A full‑stack web app for creating lists of notes, powered by **PostgreSQL + Go
 │  ├─ schema/                   # SQL migrations & seed data
 │  ├─ .env                      # local env vars (dev only)
 │  ├─ Dockerfile
-│  ├─ Makefile                  # shortcuts (lint, test, run)
+│  ├─ Makefile                  # shortcuts
 │  ├─ go.mod / go.sum
 │  └─ ...
 │
