@@ -58,9 +58,6 @@ A full‑stack web app for creating lists of notes, powered by **PostgreSQL + Go
 ### 2. Development run
 
 ```bash
-# clone & enter
-$ git clone <repo> notes-manager && cd notes-manager
-
 # start stack (uses docker-compose.override.yml for fast dev images)
 $ docker compose up
 ```
