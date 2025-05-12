@@ -1,0 +1,514 @@
+basePath: /
+definitions:
+  domain.NoteItem:
+    properties:
+      content:
+        type: string
+      id:
+        type: integer
+      list_id:
+        type: integer
+      pinned:
+        type: boolean
+      title:
+        type: string
+    type: object
+  domain.NotesList:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      user_id:
+        type: integer
+    required:
+    - title
+    type: object
+  domain.UpdateNoteItem:
+    properties:
+      content:
+        type: string
+      pinned:
+        type: boolean
+      title:
+        type: string
+    type: object
+  domain.UpdateNotesList:
+    properties:
+      description:
+        type: string
+      title:
+        type: string
+    type: object
+  domain.User:
+    properties:
+      _:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - name
+    - password
+    - username
+    type: object
+  domain.UserSignIn:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  handler.Error:
+    properties:
+      message:
+        type: string
+    type: object
+  handler.getAllItemsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.NoteItem'
+        type: array
+    type: object
+  handler.getAllListsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.NotesList'
+        type: array
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: API server for NotesManager Application
+  title: NotesManager API
+  version: "1.0"
+paths:
+  /api/items/{id}:
+    delete:
+      description: удалить заметку
+      operationId: delete-note
+      parameters:
+      - description: note ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: is_deleted (1/0)
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: Delete note
+      tags:
+      - notes-items
+    get:
+      description: получить одну заметку по ID
+      operationId: get-note-by-id
+      parameters:
+      - description: note ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.NoteItem'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: Get note by ID
+      tags:
+      - notes-items
+    put:
+      consumes:
+      - application/json
+      description: изменить содержание заметки
+      operationId: update-note
+      parameters:
+      - description: note ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: новые данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UpdateNoteItem'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: is_changed (1/0)
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: Update note
+      tags:
+      - notes-items
+  /api/lists:
+    get:
+      description: получить все списки текущего пользователя
+      operationId: get-all-lists
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.getAllListsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: Get all lists
+      tags:
+      - notes-lists
+    post:
+      consumes:
+      - application/json
+      description: создать новый список заметок
+      operationId: create-list
+      parameters:
+      - description: данные списка
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.NotesList'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: list_id
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: Create list
+      tags:
+      - notes-lists
+  /api/lists/{id}:
+    delete:
+      description: удалить список (каскадно удалит его заметки)
+      operationId: delete-list
+      parameters:
+      - description: list ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: is_deleted (1 — удалено, 0 — нет)
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: Delete list
+      tags:
+      - notes-lists
+    get:
+      description: получить один список по ID
+      operationId: get-list-by-id
+      parameters:
+      - description: list ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.NotesList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: Get list by ID
+      tags:
+      - notes-lists
+    put:
+      consumes:
+      - application/json
+      description: изменить заголовок / описание списка
+      operationId: update-list
+      parameters:
+      - description: list ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: новые данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UpdateNotesList'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: is_changed (1 — изменено, 0 — нет)
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: Update list
+      tags:
+      - notes-lists
+  /api/lists/{id}/items:
+    get:
+      description: получить все заметки списка
+      operationId: get-all-notes
+      parameters:
+      - description: list ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.getAllItemsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: Get all notes
+      tags:
+      - notes-items
+    post:
+      consumes:
+      - application/json
+      description: создать заметку в указанном списке
+      operationId: create-note
+      parameters:
+      - description: list ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: данные заметки
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.NoteItem'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: id
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: Create note
+      tags:
+      - notes-items
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: 'авторизация: возвращает JWT‑токен'
+      operationId: sign-in
+      parameters:
+      - description: учётные данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UserSignIn'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: token
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: SignIn
+      tags:
+      - auth
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: create account
+      operationId: create-account
+      parameters:
+      - description: account info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: SignUp
+      tags:
+      - auth
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

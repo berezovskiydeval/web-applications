@@ -1,0 +1,136 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.03);
+  padding: 1.25rem 1rem 1rem;
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+}
+
+.card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.card__title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #111827;
+  word-break: break-word;
+  flex: 1;
+}
+
+.card__menu-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 0 0.25rem;
+  border-radius: 4px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.card__menu-btn:hover,
+.card__menu-btn:focus {
+  background-color: #f3f4f6;
+  color: #374151;
+  outline: none;
+}
+
+.card__menu {
+  position: absolute;
+  top: 2.25rem;
+  right: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  min-width: 120px;
+  z-index: 20;
+  animation: fade-in 0.15s ease-out both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card__menu-item {
+  background: transparent;
+  border: none;
+  padding: 0.6rem 1rem;
+  text-align: left;
+  font-size: 0.9rem;
+  color: #374151;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.card__menu-item:hover {
+  background-color: #f3f4f6;
+}
+
+.card__body {
+  flex: 1;
+  margin-bottom: 0.75rem;
+}
+
+.card__desc {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #4b5563;
+  line-height: 1.4;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
+}
+
+.card__meta {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+}
+
+.card__date {
+  white-space: nowrap;
+}
+
+.card__footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.card__open-btn {
+  width: 100%;
+}
+
+@media (max-width: 480px) {
+  .card__title {
+    font-size: 1rem;
+  }
+}
